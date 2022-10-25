@@ -10,17 +10,15 @@ namespace FINSTAR_Test_Task.Controllers;
 [Route("[controller]")]
 public class DBController : ControllerBase
 {
-    public DBController(ILogger<DBController> logger, ICodeValueRepository codeValueRepository)
+    public DBController(ICodeValueRepository codeValueRepository)
     {
-        _logger = logger;
         _codeValueRepository = codeValueRepository;
     }
-
-    private readonly ILogger<DBController> _logger;
+    
     private readonly ICodeValueRepository _codeValueRepository;
 
 
-    [HttpPost("/save")]
+    [HttpPost("/save-data")]
     public async Task<IActionResult> SaveToDb(string json)
     {
         try
@@ -35,6 +33,14 @@ public class DBController : ControllerBase
         
         //Дописать location
         return Ok();
+    }
+
+    [HttpGet("/data")]
+    public async Task<IActionResult> GetAllData()
+    {
+        var response = await _codeValueRepository.GetAllData();
+
+        return Ok(JsonSerializer.Serialize(response));
     }
 
     private static List<CodeValueDto> JsonConvertToObj(string json)

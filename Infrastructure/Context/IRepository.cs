@@ -13,6 +13,12 @@ namespace FINSTAR_Test_Task.Infrastructure.Context
 		/// <typeparam name="T">Тип данных.</typeparam>
 		/// <param name="model">Модель данных.</param>
 		Task AddModelAsync<T>(T model);
+		/// <summary>
+		/// Добавить коллекцию данных в БД.
+		/// </summary>
+		/// <typeparam name="T">Тип данных.</typeparam>
+		/// <param name="models">Коллекция данных.</param>
+		Task AddModelsAsync<T>(ICollection<T> models);
 
 		/// <summary>
 		/// Удалить данные из БД

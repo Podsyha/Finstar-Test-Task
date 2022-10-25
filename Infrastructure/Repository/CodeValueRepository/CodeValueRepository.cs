@@ -25,12 +25,15 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
 
         try
         {
-            List<CodeValueEntity> codeValuesDao = ConvertToArrayDao(codeValues);
-            SortedByCode(codeValuesDao);
+            List<CodeValueEntity> codeValuesDao = ConvertToArrayDao(SortedByCode(codeValues));
 
             await ClearDataTable();
+            /*
+             Текст ТЗ: Полученный массив необходимо отсортировать по полю code и сохранить в БД. 
+             От автора: если имелось ввиду сохранение в базу с таким же порядком, то в случае в EF core сохранять нужно каждую запись отдельно
+             */
             await Add(codeValuesDao);
-
+            
             await transaction.CommitAsync();
         }
         catch (Exception e)
@@ -39,12 +42,20 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
         }
     }
 
+    public async Task<ICollection<CodeValueUi>> GetAllData()
+    {
+        ICollection<CodeValueEntity> data = await _dbContext.CodeValue.ToListAsync();
+
+        return ConvertToArrayUi(data.OrderBy(x => x.Code).ToList());
+    }
+
     private async Task ClearDataTable()
     {
         IEntityType entityType = _dbContext.Model.FindEntityType(typeof(CodeValueEntity));
         string tableName = entityType.GetTableName();
+        string query = $"TRUNCATE TABLE \"{tableName}\"";
 
-        await _dbContext.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE [{tableName}]");
+        await _dbContext.Database.ExecuteSqlRawAsync(query);
     }
 
     private static List<CodeValueEntity> ConvertToArrayDao(ICollection<CodeValueDto> codeValues)
@@ -57,13 +68,25 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
 
         return codeValuesDao;
     }
+    
+    private static List<CodeValueUi> ConvertToArrayUi(ICollection<CodeValueEntity> codeValues)
+    {
+        List<CodeValueUi> codeValuesUi = codeValues.Select(codeValue => new CodeValueUi()
+        {
+            Code = codeValue.Code,
+            Value = codeValue.Value,
+            Id = codeValue.Id
+        }).ToList();
+
+        return codeValuesUi;
+    }
 
     private async Task Add(ICollection<CodeValueEntity> codeValuesDao)
     {
-        await AddModelAsync(codeValuesDao);
+        await AddModelsAsync(codeValuesDao);
         await SaveChangeAsync();
     }
 
-    private void SortedByCode(ICollection<CodeValueEntity> codeValuesDao) =>
-        codeValuesDao.OrderBy(x => x.Code).ToList();
+    private ICollection<CodeValueDto> SortedByCode(ICollection<CodeValueDto> codeValuesDto) =>
+        codeValuesDto.OrderBy(x => x.Code).ToList();
 }

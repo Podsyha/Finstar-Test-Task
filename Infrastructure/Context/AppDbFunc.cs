@@ -36,6 +36,14 @@ namespace FINSTAR_Test_Task.Infrastructure.Context
             _assert.IsNull(model);
             await _dbContext.AddAsync(model);
         }
+        
+        public async Task AddModelsAsync<T>(ICollection<T> models)
+        {
+            _assert.EmptyCollection(models);
+
+            foreach (var model in models)
+                await _dbContext.AddAsync(model);
+        }
 
         /// <summary>
         /// Сохранить модифицированные сущности в контексте БД
