@@ -32,7 +32,7 @@ public class DBController : ControllerBase
         }
         
         //Дописать location
-        return Ok();
+        return CreatedAtAction(nameof(GetAllData), null);
     }
 
     [HttpGet("/data")]
