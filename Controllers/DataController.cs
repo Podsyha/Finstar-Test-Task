@@ -18,6 +18,11 @@ public class DataController : ControllerBase
     private readonly ICodeValueRepository _codeValueRepository;
 
 
+    /// <summary>
+    /// Сохранить данные
+    /// </summary>
+    /// <param name="json">Json объект</param>
+    /// <returns></returns>
     [HttpPost("/save-data")]
     public async Task<IActionResult> SaveToDb([FromBody] JsonDocument json)
     {
@@ -31,17 +36,28 @@ public class DataController : ControllerBase
             return BadRequest(e.Message);
         }
         
-        return CreatedAtAction(nameof(GetAllData), null);
+        return CreatedAtAction(nameof(GetData), null);
     }
 
+    /// <summary>
+    /// Получить данные с возможностью фильтрации
+    /// </summary>
+    /// <param name="filteringParams">Фильтры</param>
+    /// <returns></returns>
     [HttpGet("/data")]
-    public async Task<IActionResult> GetAllData([FromQuery] FilteringParams filteringParams)
+    public async Task<IActionResult> GetData([FromQuery] FilteringParams filteringParams)
     {
         var response = await _codeValueRepository.GetData(filteringParams);
 
         return Ok(JsonSerializer.Serialize(response));
     }
 
+    
+    /// <summary>
+    /// Конвертировать json в заданном шаблоне в коллекцию данных
+    /// </summary>
+    /// <param name="json">Json объект</param>
+    /// <returns></returns>
     private static List<CodeValueDto> JsonConvertToObj(JsonDocument json)
     {
         JArray array = JArray.Parse(json.RootElement.ToString());
