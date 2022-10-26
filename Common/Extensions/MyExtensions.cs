@@ -3,7 +3,7 @@ using FINSTAR_Test_Task.Infrastructure.DAO;
 
 namespace FINSTAR_Test_Task.Common.Extensions;
 
-public static class MyExnetsions
+public static class MyExtensions
 {
     /// <summary>
     /// Построить запрос получения данных на основе поступающих фильтров

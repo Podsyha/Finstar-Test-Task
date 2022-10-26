@@ -10,17 +10,12 @@ namespace FINSTAR_Test_Task.Infrastructure.Repository.CodeValueRepository;
 
 public class CodeValueRepository : AppDbFunc, ICodeValueRepository
 {
-    public CodeValueRepository(AppDbContext dbContext, IAssert assert)
-        : base(dbContext, assert)
+    public CodeValueRepository(AppDbContext dbContext, IAssert assert) : base(dbContext, assert)
     {
-        _assert = assert;
     }
 
 
-    private readonly IAssert _assert;
-
-
-    public async Task AddSorted(ICollection<CodeValueDto> codeValues)
+    public async Task AddDataCollection(ICollection<CodeValueDto> codeValues)
     {
         await using var transaction = GetTransaction();
 
@@ -51,6 +46,9 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
         return ConvertToArrayUi(data).ToList();
     }
 
+    /// <summary>
+    /// Очистить таблицу от всех строк
+    /// </summary>
     private async Task ClearDataTable()
     {
         IEntityType entityType = _dbContext.Model.FindEntityType(typeof(CodeValueEntity));
@@ -60,6 +58,11 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
         await _dbContext.Database.ExecuteSqlRawAsync(query);
     }
 
+    /// <summary>
+    /// Замапить dto в dao
+    /// </summary>
+    /// <param name="codeValues">DTO модель для общения с БД</param>
+    /// <returns></returns>
     private static List<CodeValueEntity> ConvertToArrayDao(ICollection<CodeValueDto> codeValues)
     {
         List<CodeValueEntity> codeValuesDao = codeValues.Select(codeValue => new CodeValueEntity()
@@ -71,9 +74,14 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
         return codeValuesDao;
     }
 
-    private static List<CodeValueUi> ConvertToArrayUi(ICollection<CodeValueEntity> codeValues)
+    /// <summary>
+    /// Замапить dao в ui model
+    /// </summary>
+    /// <param name="codeValueEntities">Сущность пользователя</param>
+    /// <returns></returns>
+    private static List<CodeValueUi> ConvertToArrayUi(ICollection<CodeValueEntity> codeValueEntities)
     {
-        List<CodeValueUi> codeValuesUi = codeValues.Select(codeValue => new CodeValueUi()
+        List<CodeValueUi> codeValuesUi = codeValueEntities.Select(codeValue => new CodeValueUi()
         {
             Code = codeValue.Code,
             Value = codeValue.Value,
@@ -83,12 +91,21 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
         return codeValuesUi;
     }
 
+    /// <summary>
+    /// Сохранить данные в БД
+    /// </summary>
+    /// <param name="codeValuesDao">Сущность пользователя</param>
     private async Task Add(ICollection<CodeValueEntity> codeValuesDao)
     {
         await AddModelsAsync(codeValuesDao);
         await SaveChangeAsync();
     }
 
+    /// <summary>
+    /// Отсортировать данные по полю code
+    /// </summary>
+    /// <param name="codeValuesDto">DTO модель для общения с БД</param>
+    /// <returns></returns>
     private ICollection<CodeValueDto> SortedByCode(ICollection<CodeValueDto> codeValuesDto) =>
         codeValuesDto.OrderBy(x => x.Code).ToList();
 }

@@ -1,5 +1,8 @@
 ﻿namespace FINSTAR_Test_Task.Controllers.Models;
 
+/// <summary>
+/// Модель выдачи результата данных в UI
+/// </summary>
 public class CodeValueUi
 {
     /// <summary>

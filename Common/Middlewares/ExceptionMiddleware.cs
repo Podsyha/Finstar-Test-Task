@@ -30,10 +30,10 @@ public sealed class ExceptionMiddleware
 
             response.StatusCode = error switch
             {
-                NullReferenceException x => (int)HttpStatusCode.NotFound,
-                RequestLogicException x => (int)HttpStatusCode.BadRequest,
-                UnauthorizedAccessException x => (int)HttpStatusCode.Unauthorized,
-                DirectoryNotFoundException x => (int)HttpStatusCode.NotFound,
+                NullReferenceException => (int)HttpStatusCode.NotFound,
+                RequestLogicException => (int)HttpStatusCode.BadRequest,
+                UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+                DirectoryNotFoundException => (int)HttpStatusCode.NotFound,
                 _ => (int)HttpStatusCode.BadRequest
             };
 

@@ -27,7 +27,7 @@ public class DataController : ControllerBase
     public async Task<IActionResult> SaveToDb([FromBody] JsonDocument json)
     {
         List<CodeValueDto> content = JsonConvertToObj(json);
-        await _codeValueRepository.AddSorted(content);
+        await _codeValueRepository.AddDataCollection(content);
         
         return CreatedAtAction(nameof(GetData), null);
     }

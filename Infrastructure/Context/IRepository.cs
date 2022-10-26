@@ -8,25 +8,11 @@ namespace FINSTAR_Test_Task.Infrastructure.Context
 	public interface IRepository
 	{
 		/// <summary>
-		/// Добавить данные в БД.
-		/// </summary>
-		/// <typeparam name="T">Тип данных.</typeparam>
-		/// <param name="model">Модель данных.</param>
-		Task AddModelAsync<T>(T model);
-		/// <summary>
 		/// Добавить коллекцию данных в БД.
 		/// </summary>
 		/// <typeparam name="T">Тип данных.</typeparam>
 		/// <param name="models">Коллекция данных.</param>
-		Task AddModelsAsync<T>(ICollection<T> models);
-
-		/// <summary>
-		/// Удалить данные из БД
-		/// </summary>
-		/// <param name="model">Модель данных</param>
-		/// <typeparam name="T">Тип данных</typeparam>
-		void RemoveModel<T>(T model);
-		
+		Task AddModelsAsync<T>(ICollection<T> models) where T : class;
 		/// <summary>
 		/// Получить транзакцию.
 		/// </summary>
