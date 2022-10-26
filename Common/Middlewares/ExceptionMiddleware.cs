@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Postter.Common.Exceptions;
+using FINSTAR_Test_Task.Common.Exceptions;
 
 namespace FINSTAR_Test_Task.Common.Middlewares;
 
@@ -9,16 +9,14 @@ namespace FINSTAR_Test_Task.Common.Middlewares;
 /// </summary>
 public sealed class ExceptionMiddleware
 {
-    public ExceptionMiddleware(RequestDelegate nextRequestDelegate, ILogger logger)
+    public ExceptionMiddleware(RequestDelegate nextRequestDelegate)
     {
-        _logger = logger;
         _nextRequestDelegate = nextRequestDelegate;
     }
 
     private readonly RequestDelegate _nextRequestDelegate;
-    private readonly ILogger _logger;
-    
-    
+
+
     public async Task InvokeAsync(HttpContext context)
     {
         try
@@ -32,14 +30,14 @@ public sealed class ExceptionMiddleware
 
             response.StatusCode = error switch
             {
-                NullReferenceException x => (int)HttpStatusCode.BadRequest,
+                NullReferenceException x => (int)HttpStatusCode.NotFound,
                 RequestLogicException x => (int)HttpStatusCode.BadRequest,
                 UnauthorizedAccessException x => (int)HttpStatusCode.Unauthorized,
                 DirectoryNotFoundException x => (int)HttpStatusCode.NotFound,
-                _ => (int)HttpStatusCode.InternalServerError
+                _ => (int)HttpStatusCode.BadRequest
             };
 
-            string result = JsonSerializer.Serialize(response);
+            string result = JsonSerializer.Serialize(error.Message);
             await response.WriteAsync(result);
         }
     }

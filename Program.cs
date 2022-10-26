@@ -1,5 +1,6 @@
 using System.Reflection;
 using FINSTAR_Test_Task.Common.Assert;
+using FINSTAR_Test_Task.Common.Middlewares;
 using FINSTAR_Test_Task.Infrastructure.Context;
 using FINSTAR_Test_Task.Infrastructure.Repository.CodeValueRepository;
 using Microsoft.EntityFrameworkCore;
@@ -42,4 +43,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.Run();

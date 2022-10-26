@@ -1,4 +1,4 @@
-﻿using Postter.Common.Exceptions;
+﻿using FINSTAR_Test_Task.Common.Exceptions;
 
 namespace FINSTAR_Test_Task.Common.Assert;
 

@@ -1,4 +1,4 @@
-﻿namespace Postter.Common.Exceptions;
+﻿namespace FINSTAR_Test_Task.Common.Exceptions;
 
 [Serializable]
 public sealed class RequestLogicException : Exception
