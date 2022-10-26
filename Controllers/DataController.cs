@@ -40,7 +40,10 @@ public class DataController : ControllerBase
     [HttpGet("/data")]
     public async Task<IActionResult> GetData([FromQuery] FilteringParams filteringParams)
     {
-        var response = await _codeValueRepository.GetData(filteringParams);
+        ICollection<CodeValueUi> response = await _codeValueRepository.GetData(filteringParams);
+
+        if (!response.Any())
+            return NoContent();
 
         return Ok(JsonSerializer.Serialize(response));
     }
