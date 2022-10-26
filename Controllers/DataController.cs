@@ -28,16 +28,16 @@ public class DataController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(e);
+            return BadRequest(e.Message);
         }
         
         return CreatedAtAction(nameof(GetAllData), null);
     }
 
     [HttpGet("/data")]
-    public async Task<IActionResult> GetAllData()
+    public async Task<IActionResult> GetAllData([FromQuery] FilteringParams filteringParams)
     {
-        var response = await _codeValueRepository.GetAllData();
+        var response = await _codeValueRepository.GetData(filteringParams);
 
         return Ok(JsonSerializer.Serialize(response));
     }

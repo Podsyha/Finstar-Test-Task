@@ -1,4 +1,5 @@
 ﻿using FINSTAR_Test_Task.Common.Assert;
+using FINSTAR_Test_Task.Common.Extensions;
 using FINSTAR_Test_Task.Controllers.Models;
 using FINSTAR_Test_Task.Infrastructure.Context;
 using FINSTAR_Test_Task.Infrastructure.DAO;
@@ -33,7 +34,7 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
              От автора: если имелось ввиду сохранение в базу с таким же порядком, то в случае в EF core сохранять нужно каждую запись отдельно
              */
             await Add(codeValuesDao);
-            
+
             await transaction.CommitAsync();
         }
         catch (Exception e)
@@ -42,11 +43,12 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
         }
     }
 
-    public async Task<ICollection<CodeValueUi>> GetAllData()
+    public async Task<ICollection<CodeValueUi>> GetData(FilteringParams filteringParams)
     {
-        ICollection<CodeValueEntity> data = await _dbContext.CodeValue.ToListAsync();
+        IQueryable<CodeValueEntity> query = _dbContext.CodeValue.BuildByFilters(filteringParams);
+        ICollection<CodeValueEntity> data = await query.ToListAsync();
 
-        return ConvertToArrayUi(data.OrderBy(x => x.Code).ToList());
+        return ConvertToArrayUi(data).ToList();
     }
 
     private async Task ClearDataTable()
@@ -68,7 +70,7 @@ public class CodeValueRepository : AppDbFunc, ICodeValueRepository
 
         return codeValuesDao;
     }
-    
+
     private static List<CodeValueUi> ConvertToArrayUi(ICollection<CodeValueEntity> codeValues)
     {
         List<CodeValueUi> codeValuesUi = codeValues.Select(codeValue => new CodeValueUi()
