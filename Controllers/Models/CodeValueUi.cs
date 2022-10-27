@@ -3,7 +3,7 @@
 /// <summary>
 /// Модель выдачи результата данных в UI
 /// </summary>
-public class CodeValueUi
+public sealed class CodeValueUi
 {
     /// <summary>
     /// Порядковый номер
