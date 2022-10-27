@@ -49,7 +49,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString), ServiceLifetime.Transient);
 
 builder.Services.AddTransient<ICodeValueRepository, CodeValueRepository>();
-builder.Services.AddTransient<IAssert, Assert>();
+builder.Services.AddSingleton<IAssert, Assert>();
 
 var app = builder.Build();
 
